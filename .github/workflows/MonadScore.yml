@@ -1,4 +1,4 @@
-name: GUI CI with screen recording
+name: MonadScore CI
 
 on:
   push:
@@ -9,7 +9,8 @@ jobs:
 
     env:
       DISPLAY: :99
-      SEED: ${{ secrets.SEED_PHRASE }}
+      SEED_9: ${{ secrets.SEED_PHRASE_9 }}
+      MAIL_9: ${{ secrets.EMAIL_9 }}
       PASS: ${{ secrets.PASSWORD }}
       PIN: ${{ secrets.PIN }}
 
@@ -41,7 +42,7 @@ jobs:
       - name: Run UI tests
         run: |
           echo "DISPLAY is $DISPLAY"
-          mvn clean test -DSEED_PHRASE="$SEED" -DPASSWORD="$PASS" -DPIN="$PIN"
+          mvn clean test -DSEED_PHRASE_9="$SEED_9" -DEMAIL_9="$MAIL_9" -DPASSWORD="$PASS" -DPIN="$PIN"
 
       - name: Stop screen recording
         if: always()

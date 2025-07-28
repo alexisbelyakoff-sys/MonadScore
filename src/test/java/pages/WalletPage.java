@@ -6,6 +6,7 @@ import org.openqa.selenium.TimeoutException;
 import org.testng.Assert;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
@@ -14,14 +15,12 @@ import static com.codeborne.selenide.Selenide.*;
 @Log4j2
 public class WalletPage extends BasePage{
 
-    private static final String GET_STARTED = "//button[text()='GET STARTED']";
-
     public WalletPage() throws AWTException {
     }
 
     public WalletPage openLoginPage() {
-//        open("chrome-extension://adaahjnbncfhalpbfifmklimghhecgep/home.html#onboarding/login");
-        open("chrome-extension://baickakiacddlihiafkokkdklhnplgaj/home.html#onboarding/login");
+        log.info("Opening HaHa Wallet page...");
+        open("chrome-extension://lmdcgjaoekphahkmlfgjfldgokichaol/home.html#onboarding/login");
         return this;
     }
 
@@ -36,10 +35,26 @@ public class WalletPage extends BasePage{
         return this;
     }
 
+    public WalletPage closeAnotherTabs() {
+        log.info("Close another tabs");
+        robot.keyPress(KeyEvent.VK_CONTROL);
+        robot.delay(50);
+        robot.keyPress(KeyEvent.VK_W);
+        robot.delay(50);
+        robot.keyRelease(KeyEvent.VK_W);
+        robot.delay(50);
+        robot.keyRelease(KeyEvent.VK_CONTROL);
+        robot.waitForIdle();
+
+        return this;
+    }
+
     public WalletPage login(String email, String password) {
+        log.info("Login wallet...");
         $("[type='email']").setValue(email);
         $("[type='password']").setValue(password);
         $(byText("CONTINUE")).click();
+        log.info("Login successful");
         return this;
     }
 
@@ -49,9 +64,11 @@ public class WalletPage extends BasePage{
     }
 
     public WalletPage createPinCode(String pin) {
+        log.info("Creating pin...");
         $("[placeholder='Your Pin Code']").setValue(pin);
         $("[placeholder='Confirm Pin Code']").setValue(pin);
         $(byText("Continue")).click();
+        log.info("Pin created");
         return this;
     }
 
@@ -61,10 +78,13 @@ public class WalletPage extends BasePage{
     }
 
     public WalletPage importWallet(String seedPhrase) {
+        log.info("Import wallet...");
         String[] seedWords = seedPhrase.split(" ");
         $("[type='checkbox']").click();
         $(byText("Import Existing Wallet")).click();
         $(byText("Recover Wallet")).shouldBe(visible);
+        $(byText("I have a 24-word recovery phrase")).click();
+        $(byText("I have a 24-word recovery phrase")).shouldNotBe(visible);
         ElementsCollection inputs = $$x("//div[(starts-with(text(), 'Import an existing'))]" +
                 "/following::div//div//input");
 
@@ -72,18 +92,12 @@ public class WalletPage extends BasePage{
             inputs.get(i).setValue(seedWords[i]);
         }
         $(byText("Continue")).click();
+        log.info("Wallet imported");
         return this;
     }
 
     public WalletPage isImportWalletSuccessful() {
         $(byText("Start Using Wallet")).shouldBe(visible).click();
-        return this;
-    }
-
-
-
-    public WalletPage getText() {
-        System.out.println($("h2").getText());
         return this;
     }
 }
