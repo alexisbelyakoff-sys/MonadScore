@@ -40,6 +40,7 @@ public class LoginPage extends BasePage{
     public LoginPage connectWallet() throws InterruptedException {
         log.info("Connecting wallet...");
         $(byText("Connect Wallet")).click();
+        $("[aria-label='Close']").shouldBe(visible);
         $(byText("HaHa Wallet")).shouldBe(visible).click();
         Thread.sleep(2000);
         WebDriver driver = WebDriverRunner.getWebDriver();
