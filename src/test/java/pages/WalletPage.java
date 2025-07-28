@@ -96,6 +96,23 @@ public class WalletPage extends BasePage{
         return this;
     }
 
+    public WalletPage importWalletShort(String seedPhrase) {
+        log.info("Import wallet...");
+        String[] seedWords = seedPhrase.split(" ");
+        $("[type='checkbox']").click();
+        $(byText("Import Existing Wallet")).click();
+        $(byText("Recover Wallet")).shouldBe(visible);
+        ElementsCollection inputs = $$x("//div[(starts-with(text(), 'Import an existing'))]" +
+                "/following::div//div//input");
+
+        for (int i = 0; i < inputs.size(); i++) {
+            inputs.get(i).setValue(seedWords[i]);
+        }
+        $(byText("Continue")).click();
+        log.info("Wallet imported");
+        return this;
+    }
+
     public WalletPage isImportWalletSuccessful() {
         $(byText("Start Using Wallet")).shouldBe(visible).click();
         return this;

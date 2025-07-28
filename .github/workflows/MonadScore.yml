@@ -1,7 +1,8 @@
 name: MonadScore CI
 
 on:
-  push:
+  schedule:
+    - cron: '5 3 * * *'
 
 jobs:
   build:
@@ -9,8 +10,28 @@ jobs:
 
     env:
       DISPLAY: :99
+      SEED_10: ${{ secrets.SEED_PHRASE_10 }}
+      MAIL_10: ${{ secrets.EMAIL_10 }}
       SEED_9: ${{ secrets.SEED_PHRASE_9 }}
       MAIL_9: ${{ secrets.EMAIL_9 }}
+      SEED_8: ${{ secrets.SEED_PHRASE_8 }}
+      MAIL_8: ${{ secrets.EMAIL_8 }}
+      SEED_7: ${{ secrets.SEED_PHRASE_7 }}
+      MAIL_7: ${{ secrets.EMAIL_7 }}
+      SEED_6: ${{ secrets.SEED_PHRASE_6 }}
+      MAIL_6: ${{ secrets.EMAIL_6 }}
+      SEED_5: ${{ secrets.SEED_PHRASE_5 }}
+      MAIL_5: ${{ secrets.EMAIL_5 }}
+      SEED_4: ${{ secrets.SEED_PHRASE_4 }}
+      MAIL_4: ${{ secrets.EMAIL_4 }}
+      SEED_3: ${{ secrets.SEED_PHRASE_3 }}
+      MAIL_3: ${{ secrets.EMAIL_3 }}
+      SEED_2: ${{ secrets.SEED_PHRASE_2 }}
+      MAIL_2: ${{ secrets.EMAIL_2 }}
+      SEED_1: ${{ secrets.SEED_PHRASE_1 }}
+      MAIL_1: ${{ secrets.EMAIL_1 }}
+      SEED_0: ${{ secrets.SEED_PHRASE_0 }}
+      MAIL_0: ${{ secrets.EMAIL_0 }}
       PASS: ${{ secrets.PASSWORD }}
       PIN: ${{ secrets.PIN }}
 
@@ -42,7 +63,18 @@ jobs:
       - name: Run UI tests
         run: |
           echo "DISPLAY is $DISPLAY"
-          mvn clean test -DSEED_PHRASE_9="$SEED_9" -DEMAIL_9="$MAIL_9" -DPASSWORD="$PASS" -DPIN="$PIN"
+          mvn clean test -DPASSWORD="$PASS" -DPIN="$PIN"
+          -DSEED_PHRASE_10="$SEED_10" -DEMAIL_10="$MAIL_10"
+          -DSEED_PHRASE_9="$SEED_9" -DEMAIL_9="$MAIL_9"
+          -DSEED_PHRASE_8="$SEED_8" -DEMAIL_8="$MAIL_8"
+          -DSEED_PHRASE_7="$SEED_7" -DEMAIL_7="$MAIL_7"
+          -DSEED_PHRASE_6="$SEED_6" -DEMAIL_6="$MAIL_6"
+          -DSEED_PHRASE_5="$SEED_5" -DEMAIL_5="$MAIL_5"
+          -DSEED_PHRASE_4="$SEED_4" -DEMAIL_4="$MAIL_4"
+          -DSEED_PHRASE_3="$SEED_3" -DEMAIL_3="$MAIL_3"
+          -DSEED_PHRASE_2="$SEED_2" -DEMAIL_2="$MAIL_2"
+          -DSEED_PHRASE_1="$SEED_1" -DEMAIL_1="$MAIL_1"
+          -DSEED_PHRASE_0="$SEED_0" -DEMAIL_0="$MAIL_0"
 
       - name: Stop screen recording
         if: always()
