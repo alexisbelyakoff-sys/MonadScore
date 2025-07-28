@@ -44,7 +44,7 @@ public class LoginPage extends BasePage{
         Thread.sleep(2000);
         WebDriver driver = WebDriverRunner.getWebDriver();
         WebDriver newTab = driver.switchTo().newWindow(WindowType.TAB);
-        newTab.get("chrome-extension://lmdcgjaoekphahkmlfgjfldgokichaol/popup.html");
+        newTab.get("chrome-extension://hhgnmnncjfnbbnnkincfcbnhhjagcana/popup.html");
         $(byText("Accept")).shouldBe(visible).click();
         $(byText("Accept")).shouldNotBe(visible);
         newTab.close();
@@ -60,7 +60,7 @@ public class LoginPage extends BasePage{
         $(byText("Sign Wallet & Continue")).click();
         WebDriver driver = WebDriverRunner.getWebDriver();
         WebDriver newTab = driver.switchTo().newWindow(WindowType.TAB);
-        newTab.get("chrome-extension://lmdcgjaoekphahkmlfgjfldgokichaol/popup.html");
+        newTab.get("chrome-extension://hhgnmnncjfnbbnnkincfcbnhhjagcana/popup.html");
         $(byText("Sign")).shouldBe(visible).click();
         $(byText("Sign")).shouldNotBe(visible);
         newTab.close();
@@ -76,7 +76,7 @@ public class LoginPage extends BasePage{
         $(byText("Run Node")).click();
         WebDriver driver = WebDriverRunner.getWebDriver();
         WebDriver newTab = driver.switchTo().newWindow(WindowType.TAB);
-        newTab.get("chrome-extension://lmdcgjaoekphahkmlfgjfldgokichaol/popup.html");
+        newTab.get("chrome-extension://hhgnmnncjfnbbnnkincfcbnhhjagcana/popup.html");
         $(byText("Sign")).shouldBe(visible).click();
         $(byText("Sign")).shouldNotBe(visible);
         newTab.close();
@@ -94,7 +94,5 @@ public class LoginPage extends BasePage{
         $(byText("Done")).shouldBe(visible);
         log.info("Check-in done");
         return this;
-
     }
-
 }
