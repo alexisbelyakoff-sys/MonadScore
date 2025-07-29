@@ -3,6 +3,7 @@ name: MonadScore CI
 on:
   schedule:
     - cron: '5 3 * * *'
+  workflow_dispatch:
 
 jobs:
   build:
