@@ -2,7 +2,7 @@ name: MonadScore CI
 
 on:
   schedule:
-    - cron: '5 3 * * *'
+    - cron: '30 0 * * *'
   workflow_dispatch:
 
 jobs:
@@ -65,6 +65,7 @@ jobs:
         run: |
           echo "DISPLAY is $DISPLAY"
           mvn clean test \
+          -DsuiteXmlFile='src/test/resources/StartNodes.xml' \
           -DPASSWORD="$PASS" -DPIN="$PIN" \
           -DSEED_PHRASE_10="$SEED_10" -DEMAIL_10="$MAIL_10" \
           -DSEED_PHRASE_9="$SEED_9" -DEMAIL_9="$MAIL_9" \
