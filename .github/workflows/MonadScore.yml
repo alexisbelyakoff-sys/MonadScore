@@ -89,8 +89,8 @@ jobs:
         run: ls -lh target/allure-results
 
       - name: Upload screen recording
+        uses: actions/upload-artifact@v3
         if: always()
-        uses: actions/upload-artifact@v4
         with:
           name: screen-recording
           path: target/allure-results/screen_recording.mp4
