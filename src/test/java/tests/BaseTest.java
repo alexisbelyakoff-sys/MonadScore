@@ -66,7 +66,7 @@ public class BaseTest {
             Configuration.browser = "chrome";
             Configuration.baseUrl = "https://dashboard.monadscore.xyz/";
             Configuration.timeout = 15000;
-            Configuration.browserSize = "1366x768";
+            Configuration.browserSize = null;
             Configuration.headless = false;
             Configuration.browserCapabilities = getChromeOptions();
         }
