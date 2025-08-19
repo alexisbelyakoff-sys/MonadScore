@@ -11,7 +11,8 @@ Xvfb :99 -screen 0 1366x768x24 & sleep 3
 
 # Старт записи экрана
 ffmpeg -y -video_size 1366x768 -framerate 15 -f x11grab -i :99 \
-  -codec:v libx264 -pix_fmt yuv420p target/allure-results/screen_recording.mp4 \
+  -c:v libx264 -preset ultrafast -crf 23 -pix_fmt yuv420p \
+  target/allure-results/screen_recording.mp4 \
   > ffmpeg.log 2>&1 & echo $! > ffmpeg_pid.txt
 
 # Запуск тестов через Maven
