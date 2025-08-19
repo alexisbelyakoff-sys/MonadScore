@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      DISPLAY: :99
       SEED_10: ${{ secrets.SEED_PHRASE_10 }}
       MAIL_10: ${{ secrets.EMAIL_10 }}
       SEED_9: ${{ secrets.SEED_PHRASE_9 }}

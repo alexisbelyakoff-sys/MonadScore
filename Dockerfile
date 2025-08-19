@@ -28,9 +28,5 @@ RUN wget https://storage.googleapis.com/chrome-for-testing-public/138.0.7204.183
 # Проверка версий
 RUN google-chrome --version && chromedriver --version && java -version && mvn -version
 
-# Копируем скрипт и даём права на выполнение
-COPY run-tests.sh /workspace/run-tests.sh
-RUN chmod +x /workspace/run-tests.sh
-
 # Рабочая директория
 WORKDIR /workspace
