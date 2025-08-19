@@ -12,7 +12,7 @@ ffmpeg -y -video_size 1366x768 -framerate 15 -f x11grab -i :99 \
   -codec:v libx264 -pix_fmt yuv420p screen_recording.mp4 > /dev/null 2>&1 & echo $! > ffmpeg_pid.txt
 
 # Запуск тестов через Maven
-mvn -B clean test -DsuiteXmlFile='src/test/resources/StartNodes.xml' \
+mvn -B clean test -Dgroups=Second -DsuiteXmlFile='src/test/resources/StartNodes.xml' \
     -DPASSWORD="$PASS" -DPIN="$PIN" \
     -DSEED_PHRASE_10="$SEED_10" -DEMAIL_10="$MAIL_10" \
     -DSEED_PHRASE_9="$SEED_9" -DEMAIL_9="$MAIL_9" \
