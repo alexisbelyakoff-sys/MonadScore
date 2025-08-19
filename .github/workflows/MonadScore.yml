@@ -48,13 +48,26 @@ jobs:
           restore-keys: |
             maven-${{ runner.os }}-
 
+      - name: Start Xvfb
+        run: |
+          Xvfb :99 -screen 0 1366x768x24 &
+          sleep 3
+
+      - name: Start screen recording
+        run: |
+          mkdir -p target/allure-results
+          ffmpeg -y -video_size 1366x768 -framerate 15 -f x11grab -i :99 \
+            -codec:v libx264 -pix_fmt yuv420p -movflags +faststart \
+            target/allure-results/screen_recording.mp4 > ffmpeg.log 2>&1 &
+          echo $! > ffmpeg_pid.txt
+
       - name: Build Docker image
         run: docker build -t ci-chrome138:latest .
 
       - name: Run UI tests inside Docker
         run: |
           docker run --rm \
-            -e DISPLAY=$DISPLAY \
+            -e DISPLAY=:99 \
             -e DPASSWORD="$PASS" \
             -e DPIN="$PIN" \
             -e DSEED_PHRASE_10="$SEED_10" \
@@ -84,8 +97,12 @@ jobs:
             ci-chrome138:latest \
             bash /workspace/run-tests.sh
 
+      - name: Stop screen recording
+        run: |
+          kill -INT $(cat ffmpeg_pid.txt) || true
+          sleep 5
+
       - name: Upload screen recording
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: screen-recording
@@ -93,7 +110,6 @@ jobs:
 
       - name: Get Allure history
         uses: actions/checkout@v2
-        if: always()
         continue-on-error: true
         with:
           ref: gh-pages
@@ -101,15 +117,17 @@ jobs:
 
       - name: Generate Allure report
         uses: simple-elf/allure-report-action@master
-        if: always()
         with:
           allure_results: target/allure-results
           allure_history: allure-history
 
       - name: Deploy Allure report to GitHub Pages
-        if: always()
         uses: peaceiris/actions-gh-pages@v2
         env:
           PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PUBLISH_BRANCH: gh-pages
           PUBLISH_DIR: allure-history
+
+      - name: Show ffmpeg log
+        if: failure()
+        run: cat ffmpeg.log || true
