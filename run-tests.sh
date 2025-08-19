@@ -1,10 +1,9 @@
 #!/bin/bash
 set -e
+cd /workspace
 
 # создаём папку, если её нет
 mkdir -p target/allure-results
-
-cd /workspace
 
 # Запуск виртуального дисплея
 Xvfb :99 -screen 0 1366x768x24 & sleep 3
@@ -35,11 +34,5 @@ kill -INT $(cat ffmpeg_pid.txt) || true
 sleep 5   # даём ffmpeg время дописать mp4
 wait $(cat ffmpeg_pid.txt) || true
 
-# Проверим, что файл создан и не пустой
-FILE=target/allure-results/screen_recording.mp4
-if [ -s "$FILE" ]; then
-  echo "✅ Видео успешно записано: $(ls -lh $FILE)"
-else
-  echo "❌ Видео не записалось или пустое"
-  cat ffmpeg.log
-fi
+# Проверка
+ls -lh target/allure-results/screen_recording.mp4
