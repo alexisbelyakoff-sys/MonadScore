@@ -11,7 +11,7 @@ Xvfb :99 -screen 0 1366x768x24 & sleep 3
 
 # Старт записи экрана
 ffmpeg -y -video_size 1366x768 -framerate 15 -f x11grab -i :99 \
-  -c:v libx264 -preset ultrafast -crf 23 -pix_fmt yuv420p \
+  -codec:v libx264 -pix_fmt yuv420p -movflags +faststart \
   target/allure-results/screen_recording.mp4 \
   > ffmpeg.log 2>&1 & echo $! > ffmpeg_pid.txt
 
@@ -31,8 +31,15 @@ mvn -B clean test -DsuiteXmlFile='src/test/resources/StartSwap.xml' \
     -DSEED_PHRASE_0="$SEED_0" -DEMAIL_0="$MAIL_0"
 
 # Остановка записи
-kill -INT $(cat ffmpeg_pid.txt)
+kill -INT $(cat ffmpeg_pid.txt) || true
+sleep 5   # даём ffmpeg время дописать mp4
 wait $(cat ffmpeg_pid.txt) || true
 
-# Проверим, что файл создан
-ls -lh target/allure-results/screen_recording.mp4
+# Проверим, что файл создан и не пустой
+FILE=target/allure-results/screen_recording.mp4
+if [ -s "$FILE" ]; then
+  echo "✅ Видео успешно записано: $(ls -lh $FILE)"
+else
+  echo "❌ Видео не записалось или пустое"
+  cat ffmpeg.log
+fi
