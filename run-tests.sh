@@ -4,7 +4,7 @@ set -e
 cd /workspace
 
 # Запуск виртуального дисплея
-Xvfb :99 -screen 0 1366x768x24 & sleep 3
+Xvfb :99 -screen 0 1366x768x24 & sleep 10
 
 # Старт записи экрана
 ffmpeg -y -video_size 1366x768 -framerate 15 -f x11grab -i :99 \
@@ -26,7 +26,7 @@ mvn -B clean test -Dgroups=Second -DsuiteXmlFile='src/test/resources/StartNodes.
     -DPASSWORD="$PASS" -DPIN="$PIN"
 
 # Остановка записи
-kill -INT $(cat ffmpeg_pid.txt) && sleep 2
+kill -INT $(cat ffmpeg_pid.txt) && sleep 10
 
 # Сохраняем видео для Allure
 mkdir -p target/allure-results
