@@ -6,6 +6,7 @@ public class LoginTest extends BaseTest {
 
     @Test(
             testName = "Run Node #0",
+            groups = {"Second"},
             priority = 0
     )
     public void checkRunNodeZero() throws InterruptedException {

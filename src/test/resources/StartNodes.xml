@@ -6,6 +6,11 @@
         <listener class-name="utils.AnnotationTransformer"/>
     </listeners>
     <test name="Chrome UI Tests">
+        <groups>
+            <run>
+                <include name="Second"/>
+            </run>
+        </groups>
         <classes>
             <class name="tests.LoginTest"/>
             <parameter name="browser" value="chrome"/>

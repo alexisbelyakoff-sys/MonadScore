@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# создаём папку, если её нет
+mkdir -p target/allure-results
+
 cd /workspace
 
 # Запуск виртуального дисплея
