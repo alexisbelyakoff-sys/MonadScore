@@ -40,63 +40,56 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up JDK
-        uses: actions/setup-java@v4
+      - name: Cache Maven repository
+        uses: actions/cache@v4
         with:
-          java-version: '17'
-          distribution: 'liberica'
+          path: ~/.m2/repository
+          key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            maven-${{ runner.os }}-
 
-      - name: Install tools (Xvfb + ffmpeg)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y xvfb ffmpeg x11-utils
+      - name: Build Docker image
+        run: docker build -t ci-chrome138:latest .
 
-      - name: Start Xvfb
+      - name: Run UI tests inside Docker
         run: |
-          Xvfb :99 -screen 0 1366x768x24 &
-          sleep 3
-
-      - name: Start recording screen with ffmpeg
-        run: |
-          ffmpeg -y -video_size 1366x768 -framerate 15 -f x11grab -i :99 -codec:v libx264 -pix_fmt yuv420p screen_recording.mp4 > /dev/null 2>&1 &
-          echo $! > ffmpeg_pid.txt
-
-      - name: Run UI tests
-        run: |
-          echo "DISPLAY is $DISPLAY"
-          mvn clean test \
-          -DsuiteXmlFile='src/test/resources/StartNodes.xml' \
-          -DPASSWORD="$PASS" -DPIN="$PIN" \
-          -DSEED_PHRASE_10="$SEED_10" -DEMAIL_10="$MAIL_10" \
-          -DSEED_PHRASE_9="$SEED_9" -DEMAIL_9="$MAIL_9" \
-          -DSEED_PHRASE_8="$SEED_8" -DEMAIL_8="$MAIL_8" \
-          -DSEED_PHRASE_7="$SEED_7" -DEMAIL_7="$MAIL_7" \
-          -DSEED_PHRASE_6="$SEED_6" -DEMAIL_6="$MAIL_6" \
-          -DSEED_PHRASE_5="$SEED_5" -DEMAIL_5="$MAIL_5" \
-          -DSEED_PHRASE_4="$SEED_4" -DEMAIL_4="$MAIL_4" \
-          -DSEED_PHRASE_3="$SEED_3" -DEMAIL_3="$MAIL_3" \
-          -DSEED_PHRASE_2="$SEED_2" -DEMAIL_2="$MAIL_2" \
-          -DSEED_PHRASE_1="$SEED_1" -DEMAIL_1="$MAIL_1" \
-          -DSEED_PHRASE_0="$SEED_0" -DEMAIL_0="$MAIL_0"
-
-      - name: Stop screen recording
-        if: always()
-        run: |
-          kill -INT $(cat ffmpeg_pid.txt)
-          sleep 2
+          docker run --rm \
+            -e DISPLAY=$DISPLAY \
+            -e DPASSWORD="$PASS" \
+            -e DPIN="$PIN" \
+            -e DSEED_PHRASE_10="$SEED_10" \ 
+            -e DEMAIL_10="$MAIL_10" \
+            -e DSEED_PHRASE_9="$SEED_9" \
+            -e DEMAIL_9="$MAIL_9" \
+            -e DSEED_PHRASE_8="$SEED_8" \
+            -e DEMAIL_8="$MAIL_8" \
+            -e DSEED_PHRASE_7="$SEED_7" \
+            -e DEMAIL_7="$MAIL_7" \
+            -e DSEED_PHRASE_6="$SEED_6" \
+            -e DEMAIL_6="$MAIL_6" \
+            -e DSEED_PHRASE_5="$SEED_5" \
+            -e DEMAIL_5="$MAIL_5" \
+            -e DSEED_PHRASE_4="$SEED_4" \
+            -e DEMAIL_4="$MAIL_4" \
+            -e DSEED_PHRASE_3="$SEED_3" \
+            -e DEMAIL_3="$MAIL_3" \
+            -e DSEED_PHRASE_2="$SEED_2" \
+            -e DEMAIL_2="$MAIL_2" \
+            -e DSEED_PHRASE_1="$SEED_1" \
+            -e DEMAIL_1="$MAIL_1" \
+            -e DSEED_PHRASE_0="$SEED_0" \
+            -e DEMAIL_0="$MAIL_0" \
+            -v ${{ github.workspace }}:/workspace \
+            -v ~/.m2:/root/.m2 \
+            ci-chrome138:latest \
+            bash /workspace/run-tests.sh
 
       - name: Upload screen recording
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: screen-recording
-          path: screen_recording.mp4
-
-      - name: Move screen recording to allure-results
-        if: always()
-        run: |
-          mkdir -p target/allure-results
-          cp screen_recording.mp4 target/allure-results/
+          path: target/allure-results/screen_recording.mp4
 
       - name: Get Allure history
         uses: actions/checkout@v2
@@ -106,14 +99,14 @@ jobs:
           ref: gh-pages
           path: gh-pages
 
-      - name: Allure Report action from marketplace
+      - name: Generate Allure report
         uses: simple-elf/allure-report-action@master
         if: always()
         with:
           allure_results: target/allure-results
           allure_history: allure-history
 
-      - name: Deploy report to Github Pages
+      - name: Deploy Allure report to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v2
         env:
