@@ -1,9 +1,12 @@
 name: MonadScore CI
 
+#on:
+#  schedule:
+#    - cron: '30 0 * * *'
+#  workflow_dispatch:
+
 on:
-  schedule:
-    - cron: '30 0 * * *'
-  workflow_dispatch:
+  push:
 
 jobs:
   build:
@@ -73,13 +76,23 @@ jobs:
             /workspace/run-tests.sh
 
       - name: Upload screen recording
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: screen-recording
           path: target/allure-results/screen_recording.mp4
 
+      - name: Get Allure history
+        uses: actions/checkout@v2
+        if: always()
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
       - name: Generate Allure report
         uses: simple-elf/allure-report-action@master
+        if: always()
         with:
           allure_results: target/allure-results
           allure_history: allure-history
@@ -90,4 +103,4 @@ jobs:
         env:
           PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PUBLISH_BRANCH: gh-pages
-          PUBLISH_DIR: target/allure-report
+          PUBLISH_DIR: allure-history
