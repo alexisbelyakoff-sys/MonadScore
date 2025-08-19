@@ -1,21 +1,18 @@
 #!/bin/bash
-set -e
-cd /workspace
 
-# создаём папку, если её нет
-mkdir -p target/allure-results
+set -e
+
+cd /workspace
 
 # Запуск виртуального дисплея
 Xvfb :99 -screen 0 1366x768x24 & sleep 3
 
 # Старт записи экрана
 ffmpeg -y -video_size 1366x768 -framerate 15 -f x11grab -i :99 \
-  -codec:v libx264 -pix_fmt yuv420p -movflags +faststart \
-  target/allure-results/screen_recording.mp4 \
-  > ffmpeg.log 2>&1 & echo $! > ffmpeg_pid.txt
+  -codec:v libx264 -pix_fmt yuv420p screen_recording.mp4 > /dev/null 2>&1 & echo $! > ffmpeg_pid.txt
 
 # Запуск тестов через Maven
-mvn -B clean test -DsuiteXmlFile='src/test/resources/StartSwap.xml' \
+mvn -B clean test -DsuiteXmlFile='src/test/resources/StartNodes.xml' \
     -DPASSWORD="$PASS" -DPIN="$PIN" \
     -DSEED_PHRASE_10="$SEED_10" -DEMAIL_10="$MAIL_10" \
     -DSEED_PHRASE_9="$SEED_9" -DEMAIL_9="$MAIL_9" \
@@ -30,9 +27,8 @@ mvn -B clean test -DsuiteXmlFile='src/test/resources/StartSwap.xml' \
     -DSEED_PHRASE_0="$SEED_0" -DEMAIL_0="$MAIL_0"
 
 # Остановка записи
-kill -INT $(cat ffmpeg_pid.txt) || true
-sleep 5   # даём ffmpeg время дописать mp4
-wait $(cat ffmpeg_pid.txt) || true
+kill -INT $(cat ffmpeg_pid.txt) && sleep 5
 
-# Проверка
-ls -lh target/allure-results/screen_recording.mp4
+# Сохраняем видео для Allure
+mkdir -p target/allure-results
+cp screen_recording.mp4 target/allure-results/

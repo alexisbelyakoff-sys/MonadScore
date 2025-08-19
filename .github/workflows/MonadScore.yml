@@ -84,13 +84,9 @@ jobs:
             ci-chrome138:latest \
             bash /workspace/run-tests.sh
 
-      - name: List allure results
-        if: always()
-        run: ls -lh target/allure-results
-
       - name: Upload screen recording
-        uses: actions/upload-artifact@v4
         if: always()
+        uses: actions/upload-artifact@v4
         with:
           name: screen-recording
           path: target/allure-results/screen_recording.mp4
@@ -117,7 +113,3 @@ jobs:
           PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PUBLISH_BRANCH: gh-pages
           PUBLISH_DIR: allure-history
-
-      - name: Show ffmpeg log
-        if: always()
-        run: cat ffmpeg.log || true
