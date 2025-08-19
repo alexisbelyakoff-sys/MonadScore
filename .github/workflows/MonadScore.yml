@@ -57,7 +57,7 @@ jobs:
             -e DISPLAY=$DISPLAY \
             -e DPASSWORD="$PASS" \
             -e DPIN="$PIN" \
-            -e DSEED_PHRASE_10="$SEED_10" \ 
+            -e DSEED_PHRASE_10="$SEED_10" \
             -e DEMAIL_10="$MAIL_10" \
             -e DSEED_PHRASE_9="$SEED_9" \
             -e DEMAIL_9="$MAIL_9" \
