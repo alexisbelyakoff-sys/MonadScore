@@ -1,0 +1,2 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","16896","checkRunNodeZero","Surefire suite","Tue Aug 19 20:35:12 UTC 2025","failed","Tue Aug 19 20:35:29 UTC 2025","tests.LoginTest","Surefire test","tests.LoginTest","checkRunNodeZero"
