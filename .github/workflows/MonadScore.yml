@@ -73,7 +73,7 @@ jobs:
             -v ${{ github.workspace }}:/workspace \
             -v ~/.m2:/root/.m2 \
             ci-chrome138:latest \
-            /workspace/run-tests.sh
+            bash /workspace/run-tests.sh
 
       - name: Upload screen recording
         if: always()
